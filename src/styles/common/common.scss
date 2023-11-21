@@ -1,4 +1,3 @@
-// 重置样式
 * {
   box-sizing: border-box;
 }
@@ -7,6 +6,7 @@ html {
   height: 100%;
   font-size: 14px;
 }
+
 body {
   height: 100%;
   color: #333;
@@ -15,7 +15,7 @@ body {
     "Hiragino Sans GB", "STHeiti", "Microsoft Sans Serif", "WenQuanYi Micro Hei",
     sans-serif;
 }
-body,
+
 ul,
 h1,
 h3,
@@ -26,14 +26,17 @@ dd {
   padding: 0;
   margin: 0;
 }
+
 a {
   text-decoration: none;
   color: #333;
   outline: none;
 }
+
 i {
   font-style: normal;
 }
+
 input[type="text"],
 input[type="search"],
 input[type="password"],
@@ -42,23 +45,28 @@ input[type="checkbox"] {
   outline: none;
   border: none;
   // -webkit-appearance: none;
-  &::placeholder {
-    color: #ccc;
-  }
 }
+
+input[type="text"]::placeholder,
+input[type="search"]::placeholder,
+input[type="password"]::placeholder,
+input[type="checkbox"]::placeholder {
+  color: #ccc;
+}
+
 img {
   max-width: 100%;
   max-height: 100%;
   vertical-align: middle;
-  background: #ebebeb url("@/assets/images/200.png") no-repeat center / contain;
 }
+
 ul {
   list-style: none;
 }
 
 #app {
   background: #f5f5f5;
-  // -webkit-user-select: none;
+  // user-select: none;
 }
 
 .container {
@@ -66,6 +74,7 @@ ul {
   margin: 0 auto;
   position: relative;
 }
+
 .ellipsis {
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -98,7 +107,43 @@ ul {
   clear: both;
 }
 
-// reset element
-.el-breadcrumb__inner.is-link {
-  font-weight: 400 !important;
+.fade-leave-active {
+  position: absolute;
+  width: 100%;
+  transition: opacity 5s 0.2s;
+  z-index: 1;
+}
+
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-right-enter-from {
+  transform: translateX(20px);
+  opacity: 0;
+}
+
+.fade-right-enter-active {
+  transition: all 0.5s;
+  z-index: 1;
+}
+
+.fade-right-enter-to {
+  transform: none;
+  opacity: 1;
+}
+
+.fade-right-leave-from {
+  transform: none;
+  opacity: 1;
+}
+
+.fade-right-leave-active {
+  transition: all 0.5s;
+  z-index: 1;
+}
+
+.fade-right-leave-to {
+  transform: translateX(-20px);
+  opacity: 0;
 }
