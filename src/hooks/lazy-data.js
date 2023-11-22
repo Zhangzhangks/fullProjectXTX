@@ -13,7 +13,12 @@ export const lazyData = (target, apiFn) => {
                     data.value = res.result
                 })
             }
-        }
+        }, {
+        threshold: 0.1,
+        immediate: true
+
+    }
+
     )
 
     return data

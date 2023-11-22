@@ -4,15 +4,16 @@
             <HomePanel :title="item.name" v-for="item in productList" :key="item.id">
                 <template #right>
                     <div class="sub">
-                        <RouterLink to="/" v-for="sub in item.children.slice(0, 4)" :key="sub.id">{{ sub.name }}
+                        <RouterLink :to="`/category/sub/${item.id}`" v-for="sub in item.children.slice(0, 4)" :key="sub.id">
+                            {{ sub.name }}
                         </RouterLink>
 
                     </div>
-                    <XtxMore />
+                    <XtxMore :path="`/category/${item.id}`" />
                 </template>
-                <div class="box" v-for="item in productList" :key="item.id">
-                    <RouterLink class="cover" to="/">
-                        <img :src="item.picture" alt="">
+                <div class="box">
+                    <RouterLink class="cover" :to="`/category/${item.id}`">
+                        <img v-lazy="item.picture" alt="">
                         <strong class="label">
                             <span>{{ item.saleInfo }}</span>
                         </strong>

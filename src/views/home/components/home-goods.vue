@@ -3,7 +3,7 @@
         <RouterLink to="/" class="image">
             <img v-lazy="goods.picture" />
         </RouterLink>
-        <p class="name ellipsis">{{ goods.name }}</p>
+        <p class="name ellipsis-2">{{ goods.name }}</p>
         <p class="desc ellipsis">{{ goods.desc }}</p>
         <p class="price">&yen;{{ goods.price }}</p>
         <div class="extra">
