@@ -1,34 +1,37 @@
 <template>
-    <ul class="app-header-nav">
+    <ul class="app-header-nav" v-if="list">
         <li class="home">
             <RouterLink to="/">首页</RouterLink>
         </li>
-        <li>
-            <a href="#">美食</a>
-            <div class="layer">
+        <li v-for="item in list" :key="item" @mouseenter="categoryshow(item.id)" @mouseleave="categoryhide(item.id)">
+            <RouterLink :to="`/category/${item.id}`" @click="categoryhide(item.id)">{{ item.name }}</RouterLink>
+            <div class="layer" :class="{ open: item.open }">
                 <ul>
-                    <li v-for="i in 10" :key="i">
-                        <a href="#">
-                            <img src="http://zhoushugang.gitee.io/erabbit-client-pc-static/uploads/img/category%20(4).png"
-                                alt="" />
-                            <p>果干</p>
-                        </a>
+                    <li v-for="sub in item.children" :key="sub.id">
+                        <RouterLink :to="`/category/sub/${sub.id}`" @click="categoryhide(item.id)">
+                            <img :src="sub.picture" alt="" />
+                            <p>{{ sub.name }}</p>
+                        </RouterLink>
                     </li>
                 </ul>
             </div>
         </li>
-        <li><a href="#">餐厨</a></li>
-        <li><a href="#">艺术</a></li>
-        <li><a href="#">电器</a></li>
-        <li><a href="#">居家</a></li>
-        <li><a href="#">洗护</a></li>
-        <li><a href="#">孕婴</a></li>
-        <li><a href="#">服装</a></li>
-        <li><a href="#">杂货</a></li>
+
     </ul>
 </template>
 <script setup>
-import { ref, reactive } from "vue";
+import { useCategoryStore } from '@/store/modules/categoryStore';
+import { storeToRefs } from 'pinia';
+const { list } = storeToRefs(useCategoryStore());
+
+const { show, hide } = useCategoryStore();
+
+const categoryshow = (id) => {
+    show(id)
+}
+const categoryhide = (id) => {
+    hide(id)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -58,15 +61,17 @@ import { ref, reactive } from "vue";
                 border-bottom: 1px solid $xtxColor;
             }
 
-            >.layer {
-                height: 132px;
-                opacity: 1;
-            }
+
         }
     }
 }
 
 .layer {
+    &.open {
+        height: 132px;
+        opacity: 1;
+    }
+
     width: 1240px;
     background-color: #fff;
     position: absolute;

@@ -27,7 +27,7 @@
     </div>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, watchEffect } from 'vue'
 import homePannel from './home-pannel.vue'
 import { findNew } from '@/apis/home'
 import homeSkeleton from './home-skeleton.vue';
@@ -36,7 +36,16 @@ const goods = ref([])
 const target = ref('')
 
 const result = lazyData(target, findNew)
-goods.value = result.value
+
+
+const stop = watchEffect(() => {
+    goods.value = result.value;
+    if (goods.value.length > 0) {
+        // 当不再需要此侦听器时:
+        stop()
+    }
+})
+
 </script>
 <style scoped lang="scss">
 .goods-list {

@@ -3,8 +3,10 @@
     <appNavBar></appNavBar>
     <!-- 头部组件 -->
     <appHeader></appHeader>
+    <appStickyHeaderNav />
     <!-- 内容容器 -->
-    <div class="app-body" style="height: 600px;">
+    <!-- App.vue -->
+    <div class="app-body">
         <router-view></router-view>
     </div>
     <!-- 底部组件 -->
@@ -14,6 +16,14 @@
 import appNavBar from '@/components/app-navBar.vue';
 import appHeader from '@/components/app-header.vue';
 import AppFooter from '@/components/app-footer.vue'
+import appStickyHeaderNav from '@/components/app-sticky-header-nav.vue';
+import { useCategoryStore } from '@/store/modules/categoryStore.js'
+import { onMounted } from 'vue';
+
+const { getAllCategory } = useCategoryStore();
+onMounted(() => {
+    getAllCategory();
+})
 </script>
 
 

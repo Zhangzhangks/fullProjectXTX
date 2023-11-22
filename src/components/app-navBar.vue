@@ -24,7 +24,6 @@ import { useUserStore } from '@/store/modules/userStore';
 import { storeToRefs } from 'pinia';
 
 const { profile } = storeToRefs(useUserStore())
-console.log(profile);
 
 </script>
 <style scoped lang="scss">
