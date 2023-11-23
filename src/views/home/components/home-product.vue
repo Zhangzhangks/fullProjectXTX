@@ -35,6 +35,7 @@ import HomeGoods from './home-goods.vue'
 import { findGoods } from '@/apis/home'
 import { lazyData } from '@/hooks/lazy-data';
 import { ref, watchEffect } from 'vue';
+
 const productRef = ref('');
 const productList = ref([])
 const result = lazyData(productRef, findGoods)

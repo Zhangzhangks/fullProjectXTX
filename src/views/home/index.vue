@@ -15,6 +15,10 @@
     <homeBrand></homeBrand>
     <!-- 商品区块 -->
     <homeProduct></homeProduct>
+    <!-- <最新专题 -->
+    <homeSpecial>
+
+    </homeSpecial>
 </template>
 <script setup >
 
@@ -24,6 +28,7 @@ import homeNew from './components/home-new.vue';
 import homeHot from './components/home-hot.vue';
 import homeBrand from './components/home-brand.vue'
 import homeProduct from './components/home-product.vue';
+import homeSpecial from './components/home-special.vue'
 </script>
 
 

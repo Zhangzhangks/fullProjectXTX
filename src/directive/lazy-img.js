@@ -5,13 +5,17 @@ export default {
         app.directive('lazy', {
             mounted(el, binding) {
                 const { stop } = useIntersectionObserver(
-                    el, ([{ isIntersecting }]) => {
+                    el, ([{ isIntersecting }], observerElement) => {
                         if (isIntersecting) {
-                            if (binding.value) {
-                                el.src = binding.value;
-                            } else {
+
+                            // console.log(observerElement, '被观察这');
+                            // console.log(binding.value);
+                            el.src = binding.value;
+
+                            el.onerror = function () {
                                 el.src = defaulting
                             }
+
                             stop()
                         }
                     },

@@ -59,7 +59,9 @@ img {
   max-height: 100%;
   vertical-align: middle;
 }
-
+* {
+  scroll-behavior: smooth;
+}
 ul {
   list-style: none;
 }

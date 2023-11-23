@@ -10,7 +10,7 @@ export const useCategoryStore = defineStore('category', () => {
 
     const getAllCategory = async () => {
         const res = await findAllCategory();
-        console.log(res, '分类商品');
+        // console.log(res, '分类商品');
         list.value = res.result;
         list.value.forEach(item => item.open = false)
     }

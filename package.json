@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@vueuse/core": "^10.6.1",
+    "animate.css": "^4.1.1",
     "axios": "^1.6.2",
     "dayjs": "^1.11.10",
     "element-plus": "^2.4.2",
