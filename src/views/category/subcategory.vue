@@ -4,10 +4,11 @@
             <!-- 面包屑 -->
             <subBread />
             <!-- 筛选区 -->
-            <goodFilter></goodFilter>
+            <goodFilter @filterChange="changeFilter"></goodFilter>
             <div class="goods-list">
                 <!-- 排序 -->
                 <subSort @changeSortParmas="changeSortParmas"></subSort>
+
                 <!-- <ul v-infinite-scroll="getData" infinite-scroll-distance="-100px" :infinite-scroll-disabled="finished">
                     <li v-for="i in goodslist" :key="i.id">
                         <goodsItem :goods="i" />
@@ -30,7 +31,8 @@
                         <goodsItem :goods="i" />
                     </li>
                 </ul>
-                <XtxInfiniteLoading :loading="loading" :finished="finished" @infinite="getData" />
+                <XtxInfiniteLoading :loading="loading" :finished="finished" @infinite="getData">
+                </XtxInfiniteLoading>
             </div>
         </div>
     </div>
@@ -59,15 +61,14 @@ const getData = async () => {
     loading.value = true;
     reqParams.categoryId = route.params.id
     let res = await findSubCategoryGoods(reqParams);
-    console.log(222);
-    if (res.result.items) {
+    if (res.result.items.length) {
         goodslist.value = [...goodslist.value, ...res.result.items];
     } else {
         // 加载完成 已加载全部数据
-        console.log('22sss2');
         loading.value = false;
         return finished.value = true;
     }
+
     reqParams.page++;
     loading.value = false;
 };
@@ -83,11 +84,20 @@ watch(() => route.params.id, (newval) => {
 // 更改排序组件发请求
 // 更改筛选条件发请求
 const changeSortParmas = (field) => {
-    console.log(3333);
+
     reqParams = { ...reqParams, ...field }
     reqParams.page = 1;
     finished.value = false;
-    goodslist.value = [];
+    goodslist.value = []; getData()
+}
+
+const changeFilter = (field) => {
+    console.log(field);
+    reqParams = { ...reqParams, ...field }
+    reqParams.page = 1;
+    finished.value = false;
+    goodslist.value = []; getData()
+
 }
 </script>
 

@@ -6,7 +6,7 @@
             <div class="body">
 
                 <a href="javascript:;" :class="{ active: filterData.brands.selectedBrand === item.id }"
-                    @click="filterData.brands.selectedBrand = item.id" v-for="item in filterData.brands" :key="item.id">
+                    @click="changeBrand(item.id)" v-for="item in filterData.brands" :key="item.id">
                     {{ item.name }}</a>
             </div>
         </div>
@@ -14,7 +14,7 @@
             <div class="head">{{ item.name }}:</div>
             <div class="body">
                 <a href="javascript:;" :class="{ active: item.selectedProp === sub.id }" v-for="sub in item.properties"
-                    @click="item.selectedProp = sub.id" :key="sub.id">
+                    @click="changeProps(item, sub.id)" :key="sub.id">
                     {{ sub.name }}</a>
             </div>
         </div>
@@ -31,11 +31,14 @@
 <script setup>
 import { findSubCategoryFilter } from '@/apis/category'
 import XtxSkeleton from '@/components/libirary/xtx-skeleton.vue';
+import { emitChangeFn } from 'element-plus';
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 const route = useRoute()
 const filterData = ref('')
 const loadding = ref(false)
+
+const emit = defineEmits(['filterChange',])
 watch(() => route.params.id, (newval) => {
     if (newval && route.path === `/category/sub/${newval}`) {
         loadding.value = true
@@ -58,6 +61,43 @@ watch(() => route.params.id, (newval) => {
         })
     }
 }, { immediate: true })
+
+
+// 重新拼凑一个对象 参考数据  [{brandId:'',attrs:[{groupName:'颜色'},{proertyName:'蓝色'}]}]
+const getFilterName = () => {
+    const obj = {
+        brandId: '',
+        attrs: []
+    }
+    obj.brandId = filterData.value.brands.selectedBrand;
+    filterData.value.saleProperties.forEach(item => {
+        if (item.selectedProp) {
+            obj.attrs.push({
+                groupName: item.name,
+                proertyName: item.properties.find(sub => sub.id === item.selectedProp).name
+            })
+        }
+    }
+    )
+
+    return obj
+}
+
+
+
+const changeBrand = (id) => {
+    if (filterData.value.brands.selectedBrand === id) return
+    filterData.value.brands.selectedBrand = id;
+    let filed = getFilterName()
+    emit('filterChange', filed)
+}
+const changeProps = (item, id) => {
+    if (item.selectedProp === id) return
+
+    item.selectedProp = id
+    let filed = getFilterName()
+    emit('filterChange', filed)
+}
 </script>
 <style scoped lang='scss'>
 // 筛选区

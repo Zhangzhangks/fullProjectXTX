@@ -32,11 +32,14 @@ export default {
             target,
             ([{ isIntersecting }], observerElement) => {
                 if (isIntersecting) {
+
                     if (!props.loading && !props.finished) {
                         emit('infinite')
                     }
                 }
-            },)
+            }, {
+            threshold: 0
+        })
         return { target }
     }
 

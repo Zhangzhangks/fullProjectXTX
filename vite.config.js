@@ -10,15 +10,23 @@ export default defineConfig({
     vue(),
     AutoImport({ resolvers: [ElementPlusResolver()] }),
     // 定制主题
-    Components({ resolvers: [ElementPlusResolver({ importStyle: "sass" })] })
+    Components({ resolvers: [ElementPlusResolver({ importStyle: "sass" })] }),
+
   ],
+ build: {
+    assetsInlineLimit: 1024 // 将小于 4KB 的资源转为 base64
+  }
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
+    // 导入时想要省略的扩展名列表
+	extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
   },
   server: {
-    open: true
+    open: true,
+    port:5174,
+    host: true // 监听所有地址
   },
   css: {
     preprocessorOptions: {
@@ -29,7 +37,5 @@ export default defineConfig({
       },
     },
   },
-  build: {
-    sourcemap: false,
-  }
+
 });

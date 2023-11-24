@@ -1,15 +1,15 @@
 <template>
     <XtxBread>
         <XtxBreadItem to="/">首页</XtxBreadItem>
-        <Transition mode="out-in" enter-active-class="animate__animated animate__fadeInBottomRight"
-            leave-active-class=" animate_animated animate__fadeOutUp">
+        <Transition mode="out-in" enter-active-class="animate__animated animate__lightSpeedInRight"
+            leave-active-class=" animate_animated animate__backOutDown">
             <XtxBreadItem :key="subCategory.top.id" v-if="subCategory.top" :to="`/category/${subCategory.top.id}`">{{
                 subCategory.top.name }}
             </XtxBreadItem>
         </Transition>
-        <Transition mode="out-in" enter-active-class="animate__animated animate__fadeInBottomRight" :key="subCategory"
+        <Transition mode="out-in" enter-active-class="animate__animated animate__lightSpeedInRight"
             leave-active-class=" animate_animated animate__fadeOutDown">
-            <XtxBreadItem :key="subCategory.sub.id" v-if="subCategory.sub">{{ subCategory.sub.name }}</XtxBreadItem>
+            <XtxBreadItem :key="subCategory.sub.id" v-if="subCategory.top">{{ subCategory.sub.name }}</XtxBreadItem>
         </Transition>
     </XtxBread>
 </template>

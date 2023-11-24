@@ -8,10 +8,10 @@ export const useUserStore = defineStore(
             profile: {
                 id: "",
                 avatar: "",
-                nickname: "s",
-                account: "ss",
+                nickname: "",
+                account: "",
                 mobile: "",
-                token: "s",
+                token: "",
             },
         });
         const { profile } = toRefs(data);
