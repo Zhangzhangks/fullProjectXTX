@@ -39,6 +39,7 @@
                     <!-- sku信息 -->
                     <XtxSku skuId="" @change="changeSku" :goods="goods"></XtxSku>
                     <XtxNumbox label="数量" v-model="num" :max="goods.inventory" />
+                    <XtxButton style="margin-top:20px;" type="primary" size="middle">加入购物车</XtxButton>
                 </div>
             </div>
             <!-- 商品推荐 -->
@@ -48,12 +49,22 @@
             <div class="goods-footer">
                 <div class="goods-article">
                     <!-- 商品+评价 -->
-                    <div class="goods-tabs"></div>
+                    <div class="goods-tabs">
+                        <goodsTab></goodsTab>
+                    </div>
                     <!-- 注意事项 -->
-                    <div class="goods-warn"></div>
+                    <div class="goods-warn">
+                        <goodWarn />
+                    </div>
                 </div>
                 <!-- 24热榜+专题推荐 -->
-                <div class="goods-aside"></div>
+
+                <!-- 24热榜+专题推荐 -->
+                <div class="goods-aside">
+                    <goodsHot :goodsId="goods.id" :type="1" />
+                    <goodsHot :goodsId="goods.id" :type="2" />
+                    <goodsHot :goodsId="goods.id" :type="3" />
+                </div>
             </div>
         </div>
     </div>
@@ -64,10 +75,15 @@ import GoodsRelevant from './components/good-relevant.vue'
 import GoodsImage from './components/goods-image.vue'
 import goodsSale from './components/goods-sale.vue';
 import goodsName from './components/goods-name.vue'
+import goodsTab from './components/goods-tab.vue';
+import goodsHot from './components/goods-hot.vue';
+import goodWarn from './components/good.warn.vue';
 import { findGoods } from '@/apis/product'
-import { ref, computed, watch, nextTick } from 'vue'
+import { ref, computed, watch, nextTick, provide } from 'vue'
 import XtxSku from '@/components/libirary/xtx-sku.vue';
+import XtxButton from '@/components/libirary/xtx-button.vue';
 
+const num = ref(1)
 // 获取商品详情
 const useGoods = () => {
     // 出现路由地址商品ID发生变化，但是不会重新初始化组件
@@ -109,7 +125,7 @@ const productListBread = computed(() => {
 
 })
 
-
+provide('goods', goods)
 const changeSku = (sku) => {
     if (sku.skuId) {
         goods.value.price = sku.price
