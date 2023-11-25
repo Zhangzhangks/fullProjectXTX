@@ -12,7 +12,7 @@ const router = createRouter({
                 { path: '/product/:id', component: () => import('@/views/goods/index.vue') },
             ]
         },
-
+        { path: '/login', component: () => import('@/views/login/index.vue') }
     ],
     scrollBehavior() {
         return { top: 0 }
