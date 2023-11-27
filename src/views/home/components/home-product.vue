@@ -40,7 +40,7 @@ const productRef = ref('');
 const productList = ref([])
 const result = lazyData(productRef, findGoods)
 const stop = watchEffect(() => {
-    console.log(result.value, '产品区块');
+    // console.log(result.value, '产品区块');
     productList.value = result.value;
     if (productList.value.length > 0) {
         stop()

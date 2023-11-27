@@ -65,7 +65,8 @@
                                         </el-icon>
                                     </template>
                                     <template #append>
-                                        <el-button type="primary">发送验证码</el-button>
+                                        <el-button type="primary" @click="send">
+                                            {{ timer === 0 ? '获取验证码' : `${timer}秒后重新发送` }}</el-button>
                                     </template>
                                 </el-input>
                             </el-form-item>
@@ -86,7 +87,11 @@
             <a href="javascript:;" class="btn" @click="login">登录</a>
         </div>
         <div class="action">
-            <img src="https://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png" alt="">
+            <a
+                href="https://graph.qq.com/oauth2.0/authorize?client_id=100556005&response_type=token&scope=all&redirect_uri=http%3A%2F%2Fwww.corho.com%3A8080%2F%23%2Flogin%2Fcallback">
+                <img src="../../../assets/images/qq.jpg" alt="">
+                <!-- <img src="https://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png" alt=""> -->
+            </a>
             <div class="url">
                 <a href="javascript:;">忘记密码</a>
                 <a href="javascript:;">免费注册</a>
@@ -96,9 +101,18 @@
 </template>
 <script setup>
 import Message from '@/components/libirary/message.js'
-import { reactive, ref, watch } from 'vue';
+import { getCurrentInstance, onUnmounted, reactive, ref, watch, onMounted } from 'vue';
 import { checkMobile, checkPassword, checkCode, checkAccount } from '@/vender/schema'
+import { userAccountLogin, userMobileLogin, userMobileLoginMsg } from '@/apis/user'
+import { useUserStore } from '@/store/modules/userStore'
+import { useIntervalFn } from '@vueuse/core'
+import { useRoute, useRouter } from 'vue-router';
 
+
+const route = useRoute()
+const router = useRouter()
+const useStore = useUserStore()
+const { proxy } = getCurrentInstance()
 const rules = reactive({
     account: [
         { required: true, message: '请输入账号', trigger: 'blur' },
@@ -119,32 +133,89 @@ const rules = reactive({
 
 
 })
-
+const ruleFormRef = ref('')
 // 是否短信登录
 const isMsgLogin = ref(false)
 // 表单信息对象
 const form = reactive({
     isAgree: false,
-    account: '',
-    password: '',
-    mobile: '',
-    code: ''
+    account: 'heima293',
+    password: 'hm#qd@23!',
+    mobile: '13666666666',
+    code: 123456
 })
-const ruleFormRef = ref('')
+const timer = ref(0)
+const { pause, resume, isActive } = useIntervalFn(() => {
+    timer.value--;
+    if (timer.value < 0) {
+        pause();
+        return timer.value = 0;
+    }
+}, 1000, { immediate: false })
 
-const login = () => {
-    Message({ type: 'success', text: '我是山' })
-    ruleFormRef.value.validate(result => {
+// 发送验证码
+const send = () => {
+    ruleFormRef.value.validateField(['mobile'], (result) => {
         if (result) {
-
-        } console.log(result);
+            userMobileLoginMsg(form.mobile).then(res => {
+                if (timer.value === 0) {
+                    Message({ type: 'success', text: '发送成功', showClose: true })
+                    timer.value = 60;
+                    resume()
+                }
+            })
+        }
     })
 }
+onUnmounted(() => {
+    pause();
+})
 
+const login = () => {
+    if (!isMsgLogin.value) {
+        ruleFormRef.value.validate(result => {
+            if (result && form.isAgree) {
+                userAccountLogin({ account: form.account, password: form.password }).then(res => {
+                    useStore.profile = res.result;
+                    const redirectUrl = route.query.redirectUrl || '/';
+                    if (redirectUrl !== '') {
+                        router.push({ path: redirectUrl })
+                    }
+                    Message({ type: 'success', text: '登陆成功', showClose: true })
+                }).catch(e => {
+                    Message({ type: 'error', text: e.response.data.message, showClose: true })
+                })
+            } else {
+                Message({ type: 'error', text: '请点击同意', showClose: true })
+            }
+        })
+    } else {
+        ruleFormRef.value.validate(result => {
+            if (result) {
+                userMobileLogin({ mobile: form.mobile, code: form.code }).then(res => {
+                    useStore.profile = res.result;
+                    const redirectUrl = route.query.redirectUrl || '/';
+                    if (redirectUrl !== '') {
+                        router.push({ path: redirectUrl })
+                    }
+                    Message({ type: 'success', text: '登陆成功', showClose: true })
+                }).catch(e => {
+                    Message({ type: 'error', text: e.response.data.message, showClose: true })
+                })
+
+            } else {
+                Message({ type: 'success', text: '发送失败', showClose: true })
+
+            }
+        })
+    }
+
+}
 watch(isMsgLogin, (val) => {
     ruleFormRef.value.resetFields()
-
 })
+
+
 </script>
 <style scoped lang="scss">
 :deep(.el-input__wrapper) {
@@ -260,6 +331,14 @@ watch(isMsgLogin, (val) => {
         display: flex;
         justify-content: space-between;
         align-items: center;
+
+        >a {
+            img {
+                width: 28px;
+                height: 28px;
+                object-fit: contain;
+            }
+        }
 
         .url {
             a {

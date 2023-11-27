@@ -12,14 +12,17 @@ export const useUserStore = defineStore(
                 account: "",
                 mobile: "",
                 token: "",
+
             },
+
         });
+        const redirectUrl = ref('/')
         const { profile } = toRefs(data);
 
         const clearUserInfo = (obj) => {
             profile.value = obj;
         };
-        return { profile, clearUserInfo };
+        return { profile, redirectUrl, clearUserInfo };
     },
     { persist: true }
 );

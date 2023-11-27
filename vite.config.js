@@ -25,7 +25,7 @@ export default defineConfig({
   },
   server: {
     open: true,
-    port: 5174,
+    port: 8080,
     host: true // 监听所有地址
   },
   css: {

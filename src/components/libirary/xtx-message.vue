@@ -5,6 +5,7 @@
             <!-- 不同提示图标会变 -->
             <i class="iconfont" :class="[style[type].icon]"></i>
             <span class="text">{{ text }}</span>
+            <i class="iconfont icon-shanchu guanbi"></i>
         </div>
     </Transition>
 </template>
@@ -22,6 +23,10 @@ export default {
             type: String,
             // warn 警告  error 错误  success 成功
             default: 'warn'
+        },
+        showClose: {
+            type: Boolean,
+            default: false
         }
     },
     setup() {
@@ -88,8 +93,10 @@ export default {
     background: #f5f5f5;
     color: #999;
     border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
 
-    i {
+    >i {
         margin-right: 4px;
         vertical-align: middle;
     }

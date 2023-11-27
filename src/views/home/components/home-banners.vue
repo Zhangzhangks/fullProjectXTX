@@ -15,7 +15,7 @@ import { findBanner } from '@/apis/home'
 import { ref } from 'vue'
 const bannerList = ref([])
 findBanner().then(res => {
-    console.log(res.result, '轮播图');
+    // console.log(res.result, '轮播图');
     bannerList.value = res.result
 })
 

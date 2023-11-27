@@ -32,7 +32,7 @@ import { findSpecial } from '@/apis/home'
 
 const specialList = ref([]);
 findSpecial().then(res => {
-    console.log(res.result);
+    // console.log(res.result,'最新专题');
     specialList.value = res.result;
 })
 

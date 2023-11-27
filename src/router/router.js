@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-
+const callback = import('@/views/login/components/callback.vue')
 const router = createRouter({
     history: createWebHashHistory(),
     routes: [
@@ -12,7 +12,10 @@ const router = createRouter({
                 { path: '/product/:id', component: () => import('@/views/goods/index.vue') },
             ]
         },
-        { path: '/login', component: () => import('@/views/login/index.vue') }
+        {
+            path: '/login', component: () => import('@/views/login/index.vue'),
+        },
+        { path: '/login/callback', component: callback }
     ],
     scrollBehavior() {
         return { top: 0 }

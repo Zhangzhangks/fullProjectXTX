@@ -16,7 +16,6 @@
 <script setup>
 import { reactive, ref, watch } from 'vue'
 import { useMouseInElement } from '@vueuse/core'
-import { ElEmpty } from 'element-plus';
 
 const props = defineProps({
     images: { type: Array, default: () => [] }

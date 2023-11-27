@@ -30,6 +30,13 @@ import { ref } from 'vue';
 import loginHeader from './components/loginHeader.vue';
 import loginFooter from './components/login-footer.vue';
 import loginForm from './components/loginform.vue'
+import { useUserStore } from '@/store/modules/userStore.js'
+import { storeToRefs } from 'pinia';
+import { useRoute } from 'vue-router';
+const { redirectUrl } = storeToRefs(useUserStore())
+const route = useRoute()
+
+redirectUrl.value = route.query.redirectUrl || '/'
 const activeName = ref('account')
 
 </script>
