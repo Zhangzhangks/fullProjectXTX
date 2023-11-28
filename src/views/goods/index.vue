@@ -39,7 +39,7 @@
                     <!-- sku信息 -->
                     <XtxSku skuId="" @change="changeSku" :goods="goods"></XtxSku>
                     <XtxNumbox label="数量" v-model="num" :max="goods.inventory" />
-                    <XtxButton style="margin-top:20px;" type="primary" size="middle">加入购物车</XtxButton>
+                    <XtxButton style="margin-top:20px;" type="primary" size="middle" @click="addCart">加入购物车</XtxButton>
                 </div>
             </div>
             <!-- 商品推荐 -->
@@ -78,11 +78,16 @@ import goodsName from './components/goods-name.vue'
 import goodsTab from './components/goods-tab.vue';
 import goodsHot from './components/goods-hot.vue';
 import goodWarn from './components/good.warn.vue';
-import { findGoods } from '@/apis/product'
+import { findGoods } from '@/apis/product.js'
 import { ref, computed, watch, nextTick, provide } from 'vue'
 import XtxSku from '@/components/libirary/xtx-sku.vue';
 import XtxButton from '@/components/libirary/xtx-button.vue';
+import { useCartStore } from '@/store/modules/cartStore'
+import Message from '@/components/libirary/message';
 
+
+
+const { sameGoodsInsert } = useCartStore();
 const num = ref(1)
 // 获取商品详情
 const useGoods = () => {
@@ -125,12 +130,45 @@ const productListBread = computed(() => {
 
 })
 
+const injectSku = ref({})
 provide('goods', goods)
 const changeSku = (sku) => {
     if (sku.skuId) {
         goods.value.price = sku.price
         goods.value.oldPrice = sku.oldPrice
         goods.value.inventory = sku.inventory
+        injectSku.value = sku
+    }
+    // console.log(sku);
+}
+
+// 加入购物车
+const addCart = () => {
+    // 本地：id skuId name picture price nowPrice count attrsText selected stock isEffective
+
+    if (injectSku.value.skuId) {
+        sameGoodsInsert({
+            id: goods.value.id,
+            skuId: injectSku.value.skuId,
+            name: goods.value.name,
+            picture: goods.value.mainPictures[0],
+            price: injectSku.value.price,
+            nowPrice: injectSku.value.price,
+            count: num.value,
+            attrsText: injectSku.value.specsText,
+            selected: true,
+            stock: injectSku.value.inventory,
+            isEffective: true
+        });
+        Message({
+            text: '加入成功',
+            type: 'success',
+        })
+    } else {
+        Message({
+            text: '请选择规格',
+            type: 'error',
+        })
     }
 }
 </script>

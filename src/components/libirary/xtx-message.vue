@@ -22,12 +22,9 @@ export default {
         type: {
             type: String,
             // warn 警告  error 错误  success 成功
-            default: 'warn'
+            default: 'info '
         },
-        showClose: {
-            type: Boolean,
-            default: false
-        }
+
     },
     setup() {
         // 定义一个对象，包含三种情况的样式，对象key就是类型字符串
@@ -49,6 +46,12 @@ export default {
                 color: '#67C23A',
                 backgroundColor: 'rgb(240, 249, 235)',
                 borderColor: 'rgb(225, 243, 216)'
+            },
+            info: {
+                icon: 'icon-warning',
+                color: 'rgb(144, 147, 153)',
+                backgroundColor: '#F4F4F5',
+                borderColor: 'yellow'
             }
         }
         const show = ref(false)

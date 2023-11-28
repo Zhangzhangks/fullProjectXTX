@@ -40,6 +40,9 @@ const props = defineProps({
 })
 const checked = ref(false)
 const emit = defineEmits(['update:modelValue', 'change']);
+watch(() => props.modelValue, (newVal) => {
+    checked.value = newVal
+}, { immediate: true })
 
 const changeChecked = () => {
     checked.value = !checked.value;

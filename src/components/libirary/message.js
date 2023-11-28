@@ -7,9 +7,9 @@ div.setAttribute('class', 'xtx-message-Container')
 document.body.appendChild(div)
 
 //2. 导出一个函数
-export default ({ type, text, showClose }) => {
+export default ({ type, text, showClose, duration = 2000 }) => {
     //3. 使用createvnode函数创建组件
-    const vender = createVNode(XtxMessage, { type, text, showClose })
+    const vender = createVNode(XtxMessage, { type, text })
     let timer = null;
     if (showClose) {
         nextTick(() => {
@@ -27,5 +27,5 @@ export default ({ type, text, showClose }) => {
     timer = setTimeout(() => {
         render(null, div)
         clearTimeout(timer)
-    }, 4000)
+    }, duration)
 }

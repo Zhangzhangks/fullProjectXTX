@@ -44,7 +44,7 @@ const props = defineProps({
 const qqData = ref('')
 if (QC.Login.check()) {
     // QC.api(api, paras, fmt, method)
-    QC.api('get_user_info', { params: props.unionId }, 'json', 'get').success(res => {
+    QC.api('get_user_info', { params: { unionId: props.unionId } }, 'json', 'get').success(res => {
         // console.log(res);
         qqData.value = res.data
     })
@@ -60,10 +60,9 @@ const send = () => {
 const submit = async () => {
     userQQBindLogin({ unionId: props.unionId, mobile: form.mobile, code: form.code }).then(res => {
         userStore.profile = res.result;
-        console.log(res);
-        if (redirectUrl.value !== '') {
-            router.push({ path: redirectUrl.value })
-        }
+        // console.log(res);
+        router.push({ path: redirectUrl.value })
+
         Message({ type: 'success', text: '登陆成功', showClose: true })
     }).catch(e => {
         Message({ type: 'error', text: e.response.data.message, showClose: true })

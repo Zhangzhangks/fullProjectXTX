@@ -1,6 +1,8 @@
 <template>
     <div class="xtx-numbox">
-        <div class="label">数量</div>
+        <div class="label">
+            {{ label }}
+        </div>
         <div class="numbox">
             <a href="javascript:;" @click="changeNum(-1)">-</a>
             <input type="text" readonly :value="modelValue">
@@ -9,6 +11,8 @@
     </div>
 </template>
 <script setup>
+import { watch } from 'vue';
+
 const props = defineProps({
     label: {
         type: String
@@ -26,12 +30,17 @@ const props = defineProps({
         default: 100
     }
 })
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'change'])
+
 const changeNum = (step) => {
+
     const newval = props.modelValue + step
+
+
     if (newval < props.min) return
     if (newval > props.max) return
     emit('update:modelValue', newval)
+
     emit('change', newval)
 }
 
