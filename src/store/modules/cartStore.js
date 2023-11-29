@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { computed, reactive, ref, toRefs } from "vue";
 import { useUserStore } from "@/store/modules/userStore";
-import { getNewCartGoods } from '@/apis/cart'
+import { getNewCartGoods, mergeLocalCart, findMergeCloudList } from '@/apis/cart'
 import message from "@/components/libirary/message";
 import confirm from '@/components/libirary/confirm';
 export const useCartStore = defineStore(
@@ -10,7 +10,7 @@ export const useCartStore = defineStore(
         // 本地：id skuId name picture price nowPrice count attrsText selected stock isEffective
         const UserStore = useUserStore();
         // 购物车状态
-        const list = ref({});
+        const list = ref([]);
         const sameGoodsInsert = (playload) => {
             // console.log(playload);
             //    是否登陆
@@ -180,8 +180,48 @@ export const useCartStore = defineStore(
             })
         }
 
+        // 修改Sku
+        const updateSku = (oldskuid, newsku) => {
+            return new Promise((resolve, reject) => {
+                // 已登录
+                if (UserStore.profile.token) {
 
-        return { list, mutipleDel, deleteCart, changeCheckAll, sigleCheck, selectedPrice, isCheckAll, sameGoodsInsert, selectedTotal, UneffectCount, effectCount, findCart, effectCount, validTotalPrice, validTotal };
+                } else {
+                    // 未登录
+                    //1.找出旧的商品信息
+                    const oldsku = list.value.find(item => item.skuId === oldskuid)
+                    const index = list.value.findIndex(item => item.skuId === oldskuid)
+                    const { skuId, price: nowPrice, specsText: attrsText, inventory: stock } = newsku
+                    //2.根据旧的商品和新商品合并
+                    const newgoods = { ...oldsku, skuId, nowPrice, attrsText, stock }
+                    //3.删除旧商品
+                    list.value.splice(index, 1)
+                    //4.添加新商品
+                    sameGoodsInsert(newgoods)
+                    resolve()
+                }
+
+            })
+        }
+        // 合并购物车
+        const mergeCart = async () => {
+            const cartlist = list.value.map(item => {
+                return {
+                    skuId: item.skuId,
+                    selected: item.selected,
+                    count: item.count
+                }
+            })
+            await mergeLocalCart(cartlist)
+            list.value = []
+        }
+        // 登陆后获取合并的线上购物车
+        const MergeCloud = async () => {
+            let res = await findMergeCloudList()
+            list.value = res.result
+
+        }
+        return { list, updateSku, mergeCart, mutipleDel, deleteCart, changeCheckAll, sigleCheck, selectedPrice, isCheckAll, sameGoodsInsert, selectedTotal, UneffectCount, effectCount, findCart, effectCount, validTotalPrice, validTotal };
     },
     { persist: true }
 );

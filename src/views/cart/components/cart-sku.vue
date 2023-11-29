@@ -54,11 +54,11 @@ onClickOutside(target, (event) => close())
 
 // 选择SKU时候触发
 const currSku = ref(null)
+const emit = defineEmits(['change'])
 const injectSku = (sku) => {
     currSku.value = sku
 }
 const submit = () => {
-    console.log(goods.value);
     // 给购物车组件数据的前提：有sku信息，sku信息完整，sku中的skuId不能现有props.skuId一样
     if (currSku.value && currSku.value.skuId && currSku.value.skuId !== props.skuId) {
         emit('change', currSku.value)

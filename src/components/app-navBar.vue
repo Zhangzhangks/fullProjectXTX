@@ -22,13 +22,17 @@
 <script  name= 'AppTopnav' setup>
 import { useUserStore } from '@/store/modules/userStore';
 import { storeToRefs } from 'pinia';
+import { useCartStore } from '@/store/modules/cartStore'
 import { useRouter } from 'vue-router';
 const router = useRouter()
 const UserStore = useUserStore()
 const { profile } = storeToRefs(UserStore)
+
+const { list } = storeToRefs(useCartStore())
 const logout = function () {
     router.push('/login');
     UserStore.profile = {}
+    list.value = []
 }
 
 </script>

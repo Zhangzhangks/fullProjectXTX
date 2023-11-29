@@ -47,7 +47,8 @@
                                     <div>
                                         <p class="name ellipsis">{{ i.name }}</p>
                                         <!-- 选择规格组件 -->
-                                        <cartsku :attrs="i.attrsText" :skuId="i.skuId"></cartsku>
+                                        <cartsku @change="(sku) => updateCartSku(i.skuId, sku)" :attrs="i.attrsText"
+                                            :skuId="i.skuId"></cartsku>
                                     </div>
                                 </div>
                             </td>
@@ -131,11 +132,12 @@
 </template>
 <script setup>
 import GoodRelevant from '@/views/goods/components/good-relevant.vue';
-import { useCartStore } from '@/store/modules/cartStore'
-import { storeToRefs } from 'pinia';
+
 import XtxNumbox from '@/components/libirary/xtx-numbox.vue';
 import cartsku from './components/cart-sku.vue'
-const { sigleCheck, deleteCart, changeCheckAll, mutipleDel } = useCartStore();
+import { useCartStore } from '@/store/modules/cartStore'
+import { storeToRefs } from 'pinia';
+const { sigleCheck, deleteCart, changeCheckAll, mutipleDel, updateSku, mergeCart } = useCartStore();
 const { selectedTotal, UneffectCount, selectedPrice, effectCount, validTotal, isCheckAll } = storeToRefs(useCartStore())
 const deleteMutiple = () => {
     effectCount.value.filter(item => item.selected).forEach(ele => {
@@ -146,6 +148,10 @@ const deleteMutipleUnvalid = () => {
     UneffectCount.value.filter(item => item.selected).forEach(ele => {
         mutipleDel(ele.skuId)
     });
+}
+const updateCartSku = (oldSkuid, newSku) => {
+
+    updateSku(oldSkuid, newSku)
 }
 </script>
 <style scoped lang="scss">

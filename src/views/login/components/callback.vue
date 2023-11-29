@@ -35,8 +35,10 @@ import { ref } from 'vue';
 import { userQQLogin } from '@/apis/user'
 import Message from '@/components/libirary/message'
 import { useUserStore } from '@/store/modules/userStore';
-import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
+import { useCartStore } from '@/store/modules/cartStore'
+import { storeToRefs } from 'pinia';
+const { mergeCart } = useCartStore();
 const { redirectUrl } = storeToRefs(useUserStore())
 const userSotre = useUserStore()
 const hasAccount = ref(true)
@@ -52,8 +54,10 @@ if (QC.Login.check()) {
         userQQLogin(openId).then(res => {
             console.log(res);
             userSotre.profile = res.result;
-            router.push({ path: redirectUrl.value })
-            Message({ type: 'success', text: 'qq登录成功' })
+            mergeCart().then(() => {
+                router.push({ path: redirectUrl.value })
+                Message({ type: 'success', text: 'qq登录成功' })
+            })
         }).catch(e => {
             isBind.value = false
         })

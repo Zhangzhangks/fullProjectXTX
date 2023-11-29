@@ -107,7 +107,9 @@ import { userAccountLogin, userMobileLogin, userMobileLoginMsg } from '@/apis/us
 import { useUserStore } from '@/store/modules/userStore'
 import { useIntervalFn } from '@vueuse/core'
 import { useRoute, useRouter } from 'vue-router';
-
+import { useCartStore } from '@/store/modules/cartStore'
+import { storeToRefs } from 'pinia';
+const { mergeCart } = useCartStore();
 
 const route = useRoute()
 const router = useRouter()
@@ -178,10 +180,10 @@ const login = () => {
                 userAccountLogin({ account: form.account, password: form.password }).then(res => {
                     useStore.profile = res.result;
                     const redirectUrl = route.query.redirectUrl || '/';
-                    if (redirectUrl !== '') {
+                    mergeCart().then(() => {
                         router.push({ path: redirectUrl })
-                    }
-                    Message({ type: 'success', text: '登陆成功', showClose: true })
+                        Message({ type: 'success', text: '登陆成功', showClose: true })
+                    })
                 }).catch(e => {
                     Message({ type: 'error', text: e.response.data.message, showClose: true })
                 })
@@ -199,6 +201,7 @@ const login = () => {
                         router.push({ path: redirectUrl })
                     }
                     Message({ type: 'success', text: '登陆成功', showClose: true })
+
                 }).catch(e => {
                     Message({ type: 'error', text: e.response.data.message, showClose: true })
                 })
