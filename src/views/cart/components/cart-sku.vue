@@ -17,8 +17,8 @@ import { getSpecsAndSkus } from '@/apis/cart'
 import { ref } from 'vue';
 const props = defineProps({
     attrs: {
-        type: Object,
-        default: () => ({})
+        type: String,
+        default: ''
     },
     skuId: {
         type: String,

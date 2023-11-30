@@ -1,9 +1,10 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import { useUserStore } from "@/store/modules/userStore";
-const callback = import("@/views/login/components/callback.vue");
-const product = import("@/views/goods/index.vue");
-const category = import("@/views/category/subcategory.vue");
-const cart = import("@/views/cart/index.vue");
+const callback = () => import("@/views/login/components/callback.vue");
+const product = () => import("@/views/goods/index.vue");
+const category = () => import("@/views/category/subcategory.vue");
+const cart = () => import("@/views/cart/index.vue");
+const pay = () => import('@/views/member/pay/pay.vue')
 const router = createRouter({
     history: createWebHashHistory(),
     routes: [
@@ -13,15 +14,16 @@ const router = createRouter({
             children: [
                 { path: "", component: () => import("@/views/home/index.vue") },
                 {
-                    path: "/category/:id",
+                    path: "category/:id",
                     component: () => import("@/views/category/index.vue"),
                 },
-                { path: "/category/sub/:id", component: category },
-                { path: "/product/:id", component: product },
-                { path: "/product/:id", component: product },
-                { path: "/cart", component: cart },
-                { path: '/member/checkout', component: () => import('@/views/member/order/index.vue') },
-                { path: '/member/pay', component: () => import('@/views/member/pay/pay.vue') }
+                { path: "category/sub/:id", component: category },
+                { path: "product/:id", component: product },
+                { path: "product/:id", component: product },
+                { path: "cart", component: cart },
+                { path: 'member/checkout', component: () => import('@/views/member/order/index.vue') },
+                { path: 'member/pay', component: pay },
+                { path: 'pay/callback', component: () => import('@/views/member/pay/callback.vue') }
             ],
         },
         {
@@ -40,7 +42,7 @@ router.beforeEach((to, from, next) => {
     const token = userStore.profile.token || "";
     if (!token && to.path.startsWith('/member')) {
         console.log(to.fullPath);
-       return next('/login?redirectUrl='+encodeURIComponent(to.fullPath));
+        return next('/login?redirectUrl=' + encodeURIComponent(to.fullPath));
     }
     next()
 });
