@@ -14,8 +14,8 @@
                     <p>支付还剩 <span>24分59秒</span>, 超时后将取消订单</p>
                 </div>
                 <div class="amount" v-if="order">
-                    <span>应付总额：</span>
-                    <span>¥{{order.payMoney .toFixed(2)}}</span>
+                    <span>应付总额：ssssss {{ timer }}---{{ text }}</span>
+                    <span>¥{{ order.payMoney.toFixed(2) }}</span>
                 </div>
             </div>
             <!-- 付款方式 -->
@@ -36,6 +36,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 </template>
 <script >
@@ -43,7 +44,7 @@ import { ref } from 'vue'
 import { findOrder } from '@/apis/order'
 import { useRoute } from 'vue-router'
 // 提供复用逻辑的函数（钩子）
-import { useIntersectionObserver, useIntervalFn } from '@vueuse/core'
+import { useIntervalFn } from '@vueuse/core'
 import dayjs from 'dayjs'
 export default {
     name: 'XtxPayPage',
@@ -52,16 +53,28 @@ export default {
         const order = ref(null)
         // 路由信息
         const route = useRoute()
+        const timer = ref(0);
+        const text=ref()
         // 查询订单
         findOrder(route.query.orderId).then(data => {
             // 设置订单
             order.value = data.result
-            console.log(dayjs.unix(order.value.countdown).format('mm:ss'));
+            timer.value = 60;
+            resume()
+
         })
+        const { pause, resume, isActive } = useIntervalFn(() => {
+            /* your function */
+            timer.value--;
+            console.log(22);
+             text.value = dayjs.unix(order.value.countdown).format('mm分:ss妙')
+            if (timer.value <= 0) {
+                pause();
+            }
+        }, 1000)
 
-        const timer = ref(0);
 
-        return { order }
+        return { order ,timer,text}
     }
 }
 </script>
@@ -149,4 +162,5 @@ export default {
             background: url(https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/c66f98cff8649bd5ba722c2e8067c6ca.jpg) no-repeat center / contain;
         }
     }
-}</style>
+}
+</style>
