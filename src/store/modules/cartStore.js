@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { computed, reactive, ref, toRefs } from "vue";
 import { useUserStore } from "@/store/modules/userStore";
-import { getNewCartGoods, mergeLocalCart, findMergeCloudList } from '@/apis/cart'
+import { getNewCartGoods, mergeLocalCart, findMergeCloudList, insertCart, deleteCarts, updateCartApi } from '@/apis/cart'
 import message from "@/components/libirary/message";
 import confirm from '@/components/libirary/confirm';
 export const useCartStore = defineStore(
@@ -11,12 +11,20 @@ export const useCartStore = defineStore(
         const UserStore = useUserStore();
         // 购物车状态
         const list = ref([]);
+        // 加入购物车
         const sameGoodsInsert = (playload) => {
+
             // console.log(playload);
             //    是否登陆
             return new Promise((resolve, reject) => {
                 if (UserStore.profile.token) {
                     //  登陆
+                    const { skuId, count, } = playload
+                    insertCart({ skuId, count }).then(e => {
+                        findMergeCloudList().then(res => {
+                            list.value = res.result
+                        })
+                    })
                 } else {
                     // 未登录
                     // 如果有相同的商品
@@ -37,7 +45,12 @@ export const useCartStore = defineStore(
             });
         };
 
+        // 登陆后获取合并的线上购物车
+        const MergeCloud = async () => {
+            let res = await findMergeCloudList()
+            list.value = res.result
 
+        }
         // 实时更新数据库内每个商品的信息
         const updateCart = (goods) => {
             // goods中字段有可能不完整，goods有的信息才去修改。
@@ -53,6 +66,8 @@ export const useCartStore = defineStore(
         const findCart = () => {
             return new Promise((resolve, reject) => {
                 if (UserStore.profile.token) {
+
+                    MergeCloud()
                 } else {
                     const maplist = list.value.map(item => {
                         return getNewCartGoods(item.skuId)
@@ -117,24 +132,22 @@ export const useCartStore = defineStore(
         const changeCheckAll = (val) => {
             return new Promise((resolve, reject) => {
                 // 已登录
-                if (UserStore.profile.token) {
-
-                } else {
-                    isCheckAll.value = val
-                    effectCount.value.forEach(item => {
-                        item.selected = val
-                    })
-                    resolve()
-                }
+                isCheckAll.value = val
+                effectCount.value.forEach(item => {
+                    item.selected = val
+                })
+                resolve()
             })
-
         }
         // 根据单选来改变全选 改变数量
         const sigleCheck = (playload) => {
             return new Promise((resolve, reject) => {
                 // 已登录
                 if (UserStore.profile.token) {
-
+                    updateCartApi(playload).then(res => {
+                        findCart(res.result);
+                        resolve()
+                    })
                 } else {
                     updateCart(playload)
                 }
@@ -147,6 +160,15 @@ export const useCartStore = defineStore(
             confirm({ title: "温馨提示", message: "是否删除商品" }).then(() => {
                 new Promise((resolve, reject) => {
                     if (UserStore.profile.token) {
+                        deleteCart([skuId]).then(res => {
+                            message({
+                                text: '删除成功',
+                                type: 'success',
+                            })
+                            findMergeCloudList().then(res => {
+                                list.value = res.result
+                            })
+                        })
 
                     } else {
                         const index = list.value.findIndex(item => item.skuId === skuId)
@@ -166,14 +188,25 @@ export const useCartStore = defineStore(
             })
 
         }
-        const mutipleDel = (skuId) => {
+        const mutipleDel = (playload) => {
             return new Promise((resolve, reject) => {
                 // 已登录
                 if (UserStore.profile.token) {
+                    deleteCarts(playload).then(res => {
+                        message({
+                            text: '删除成功',
+                            type: 'success',
+                        })
+                        findMergeCloudList().then(res => {
+                            list.value = res.result
+                        })
+                    })
 
                 } else {
-                    const index = list.value.findIndex(item => item.skuId === skuId)
-                    list.value.splice(index, 1)
+                    playload.forEach(ele => {
+                        const index = list.value.findIndex(item => item.skuId === ele)
+                        list.value.splice(index, 1)
+                    })
                     resolve()
                 }
 
@@ -185,6 +218,20 @@ export const useCartStore = defineStore(
             return new Promise((resolve, reject) => {
                 // 已登录
                 if (UserStore.profile.token) {
+                    //1.找出旧的商品信息
+                    const oldsku = list.value.find(item => item.skuId === oldskuid)
+                    const { skuId, price: nowPrice, specsText: attrsText, inventory: stock, count } = newsku
+                    //2.根据旧的商品和新商品合并
+                    const newgoods = { ...oldsku, skuId, nowPrice, attrsText, stock }
+                    //3.删除旧商品
+                    deleteCarts([oldskuid]).then(res => {
+                        //4.添加新商品
+                        return insertCart({ skuId: newgoods.skuId, count: newgoods.count })
+                    }).then(res => {
+                        return findMergeCloudList()
+                    }).then(res => {
+                        list.value = res.result
+                    })
 
                 } else {
                     // 未登录
@@ -203,6 +250,7 @@ export const useCartStore = defineStore(
 
             })
         }
+
         // 合并购物车
         const mergeCart = async () => {
             const cartlist = list.value.map(item => {
@@ -215,12 +263,7 @@ export const useCartStore = defineStore(
             await mergeLocalCart(cartlist)
             list.value = []
         }
-        // 登陆后获取合并的线上购物车
-        const MergeCloud = async () => {
-            let res = await findMergeCloudList()
-            list.value = res.result
 
-        }
         return { list, updateSku, mergeCart, mutipleDel, deleteCart, changeCheckAll, sigleCheck, selectedPrice, isCheckAll, sameGoodsInsert, selectedTotal, UneffectCount, effectCount, findCart, effectCount, validTotalPrice, validTotal };
     },
     { persist: true }

@@ -33,3 +33,34 @@ export const mergeLocalCart = (cartList) => {
 export const findMergeCloudList = () => {
     return request('/member/cart', 'get')
 }
+
+/**
+ * 加入购物车
+ * @param {String} skuId - 商品SKUID
+ * @param {Integer} count - 商品数量
+ * @returns Promise
+ */
+export const insertCart = ({ skuId, count }) => {
+    return request('/member/cart', 'post', { skuId, count })
+}
+
+/**
+ * 删除商品（支持批量删除）
+ * @param {Array<string>} ids - skuId集合
+ * @returns Promise
+ */
+export const deleteCarts = (ids) => {
+    return request('/member/cart', 'delete', { ids })
+}
+
+
+/**
+ * 修改购物车商品的状态和数量
+ * @param {String} goods.skuId - 商品sku
+ * @param {Boolean} goods.selected - 选中状态
+ * @param {Integer} goods.count - 商品数量
+ * @returns Promise
+ */
+export const updateCartApi = (goods) => {
+    return request('/member/cart/' + goods.skuId, 'put', goods)
+}

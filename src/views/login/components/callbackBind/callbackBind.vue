@@ -61,7 +61,7 @@ const submit = async () => {
     userQQBindLogin({ unionId: props.unionId, mobile: form.mobile, code: form.code }).then(res => {
         userStore.profile = res.result;
         // console.log(res);
-        router.push({ path: redirectUrl.value })
+        // router.push({ path: redirectUrl.value })
 
         Message({ type: 'success', text: '登陆成功', showClose: true })
     }).catch(e => {

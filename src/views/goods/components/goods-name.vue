@@ -43,7 +43,7 @@ const countyCode = ref('110101')
 const fullLocation = ref('北京市 市辖区 东城区')
 // 有默认地址
 if (props.goods.userAddresses) {
-    const defaultAddr = props.goods.userAddresses.find(addr => addr.isDefault === 1)
+    const defaultAddr = props.goods.userAddresses.find(addr => addr.isDefault === 0)
     if (defaultAddr) {
         provinceCode.value = defaultAddr.provinceCode
         cityCode.value = defaultAddr.cityCode

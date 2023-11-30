@@ -122,7 +122,7 @@
                 <div class="total">
                     共 {{ validTotal }} 件商品，已选择 {{ selectedTotal }} 件，商品合计：
                     <span class="red">￥{{ selectedPrice.toFixed(2) }}</span>
-                    <XtxButton type="primary">下单结算</XtxButton>
+                    <XtxButton type="primary" @click="checkout">下单结算</XtxButton>
                 </div>
             </div>
             <!-- 猜你喜欢 -->
@@ -137,21 +137,47 @@ import XtxNumbox from '@/components/libirary/xtx-numbox.vue';
 import cartsku from './components/cart-sku.vue'
 import { useCartStore } from '@/store/modules/cartStore'
 import { storeToRefs } from 'pinia';
+import message from '@/components/libirary/message';
+import confirm from '@/components/libirary/confirm';
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/store/modules/userStore';
+const router = useRouter()
 const { sigleCheck, deleteCart, changeCheckAll, mutipleDel, updateSku, mergeCart } = useCartStore();
 const { selectedTotal, UneffectCount, selectedPrice, effectCount, validTotal, isCheckAll } = storeToRefs(useCartStore())
 const deleteMutiple = () => {
-    effectCount.value.filter(item => item.selected).forEach(ele => {
-        mutipleDel(ele.skuId)
-    });
+    const sku = effectCount.value.filter(item => item.selected).map(ele => ele.skuId)
+    mutipleDel(sku)
 }
+
+
 const deleteMutipleUnvalid = () => {
-    UneffectCount.value.filter(item => item.selected).forEach(ele => {
-        mutipleDel(ele.skuId)
-    });
+    const sku=UneffectCount.value.filter(item => item.selected).map(ele => ele.skuId)
+    mutipleDel(sku)
+
 }
 const updateCartSku = (oldSkuid, newSku) => {
 
     updateSku(oldSkuid, newSku)
+}
+
+const checkout = () => {
+
+    //1.是否有商品
+    if (selectedTotal.value <= 0) {
+        message({type:'warn',text:'请选择商品'})
+    }
+    //2.是否登陆
+    confirm({
+        title: '温馨提示',
+        message: '您尚未登录，是否前往登录？',
+
+    }).then(res => {
+
+        router.push({ path: '/member/checkout'})
+    }).catch(e => {
+        message({type:'info',text:'已取消'})
+    })
+    //3.导航守卫
 }
 </script>
 <style scoped lang="scss">
