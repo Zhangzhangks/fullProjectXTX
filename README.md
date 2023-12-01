@@ -144,3 +144,18 @@ display: inline-block;
 混入语法：SCSS 运用@mixin——@include；LESS 运用.show{}——.show()；
 命名空间语法：只针对 LESS 文件起作用，首先用#命名再调用；
 继承语法：SCSS 运用@extend，LESS 运用&:extend( )。
+
+
+
+> 1. jsx语法使用
+1. npm i @vitejs/plugin-vue-jsx
+// vite.config.js
+2. import vueJsx from '@vitejs/plugin-vue-jsx'
+
+export default {
+  plugins: [
+    vueJsx(),
+  ],
+}
+
+3. 在script中加入 lang="jsx"， 如果是tsx，则改成 lang="tsx"

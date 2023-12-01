@@ -6,9 +6,6 @@
         </div>
 
         <XtxCarousel :banners="getGoodsList" style="height:380px" auto-play></XtxCarousel>
-
-
-
     </div>
 </template>
 

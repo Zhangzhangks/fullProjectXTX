@@ -1,15 +1,16 @@
 <template>
-
-    <router-view> </router-view>
-
+    <!-- <router-view> </router-view> -->
+    <jsxstudy />
 </template>
 <script setup >
-import XtxxDialog from './components/xtxx-dialog.vue';
+import jsxstudy from '../jxs语法的使用.vue'
 
 
 
 
-confirm
+
 </script>
+<style scoped lang="scss"></style>
+
 
 
