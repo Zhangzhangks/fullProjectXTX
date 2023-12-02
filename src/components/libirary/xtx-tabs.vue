@@ -1,6 +1,6 @@
 <script lang="jsx">
 import { useVModel } from '@vueuse/core'
-import { provide, ref } from 'vue'
+import { computed, provide, ref, toRefs } from 'vue'
 export default {
     name: 'XtxTabs',
     // jsx语法，它能够让我们创建节点和写html一样
@@ -15,14 +15,20 @@ export default {
     },
     setup(props, { emit }) {
 
-        const toggle = (name) => {
+        const { modelValue: activeName } = toRefs(props);
+        const toggle = (name, index, e) => {
+            // console.log(name, index, e);
             emit('update:modelValue', name)
+            emit('tab-click', { name, index }, e)
         }
+
+        provide('activeName', activeName);
+
         return { toggle }
     },
     render() {
         const panels = this.$slots.default();
-        console.log(panels);
+        // console.log(panels);
         // 支持动静结合 v-for渲染和直接渲染
         const content = []
         panels.forEach(item => {
@@ -40,7 +46,8 @@ export default {
 
         const nav = <nav>{
             content.map((item, index) => {
-                return <a class={{active:item.props.name===this.modelValue}} href='javascript:;' onClick={() => this.toggle(item.props.name)}>{item.props.label}</a>
+                return <a class={{ active: item.props.name === this.modelValue }} href='javascript:;'
+                    onClick={($event) => this.toggle(item.props.name, index, $event)}>{item.props.label}</a>
             })
         }
         </nav>

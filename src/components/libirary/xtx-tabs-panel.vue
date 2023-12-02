@@ -1,6 +1,6 @@
 <template>
     <!-- 装载是内容 -->
-    <div class="xtx-tabs-panel">
+    <div class="xtx-tabs-panel" v-if="activeName === name">
         <slot />
     </div>
 </template>
@@ -23,6 +23,7 @@ export default {
     setup() {
         // 当前组件该不该显示，取决于xtx-tabs组件的activeName数据是否和props.name一样
         const activeName = inject('activeName')
+
         return { activeName }
     }
 }

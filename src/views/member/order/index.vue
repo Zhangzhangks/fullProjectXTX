@@ -91,10 +91,12 @@
 <script setup>
 import { ref, reactive } from "vue";
 import Checkoutaddress from "./components/checkout-address.vue";
-import { findCheckoutInfo , createOrder } from "@/apis/order";
+import { findCheckoutInfo, createOrder } from "@/apis/order";
 import message from "@/components/libirary/message";
 import { useRouter } from "vue-router";
 const checkoutInfo = ref("");
+
+
 findCheckoutInfo().then((res) => {
     checkoutInfo.value = res.result;
     // 设置提交时候的商品

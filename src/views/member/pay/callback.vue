@@ -72,6 +72,8 @@ findOrderDetail(route.query.orderId).then(data => {
 
     .btn {
         margin-top: 50px;
+        display: flex;
+        justify-content: center;
     }
 
     .alert {

@@ -32,11 +32,13 @@ const props = defineProps({
     count: { typeof: Number, default: 5 },
 });
 const total = ref('');
+
 const currentPage = ref('');
 const pageSize = ref('');
 let count = null;
 
 watch(props, () => {
+
     total.value = props.total;
     currentPage.value = props.currentPage;
     pageSize.value = props.pageSize;

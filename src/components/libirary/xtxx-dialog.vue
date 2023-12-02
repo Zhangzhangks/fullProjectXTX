@@ -12,7 +12,7 @@
                 <slot name="footer"></slot>
             </div>
         </div>
-        {{ modelValue }}
+
     </div>
 </template>
 <script setup>

@@ -39,12 +39,10 @@ const router = createRouter({
                             path: 'order', component: { render: () => h(RouterView) },
                             children: [
                                 { path: '', component: () => import("@/views/member/user/order.vue") },
-                                { path: ':orderId(\\d+)', component: () => import('@/views/member/user/detail.vue') },
+                                { path: ':orderId(\\d+)', component: () => import('@/views/member/user/orderDetail.vue') },
 
                             ]
                         },
-
-
 
                     ],
                 },
@@ -54,16 +52,17 @@ const router = createRouter({
                 },
                 { path: "member/pay", component: pay },
                 {
-                    path: "pay/callback",
+                    path: "/pay/callback",
                     component: () => import("@/views/member/pay/callback.vue"),
                 },
-
             ],
         },
         {
             path: "/login",
             component: () => import("@/views/login/index.vue"),
         },
+
+
         { path: "/login/callback", component: callback },
     ],
     scrollBehavior() {
