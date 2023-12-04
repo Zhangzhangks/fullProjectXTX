@@ -91,49 +91,67 @@
 <script setup>
 import { ref, reactive } from "vue";
 import Checkoutaddress from "./components/checkout-address.vue";
-import { findCheckoutInfo, createOrder } from "@/apis/order";
+import {
+    findCheckoutInfo,
+    findOrderRepurchase,
+    createOrder,
+} from "@/apis/order";
 import message from "@/components/libirary/message";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 const checkoutInfo = ref("");
+const route = useRoute();
 
+if (route.query.orderId) {
+    findOrderRepurchase(route.query.orderId).then((res) => {
+        console.log(res, "再次购买");
+        checkoutInfo.value = res.result;
+        // 设置提交时候的商品
+        requestParams.goods = checkoutInfo.value.goods.map((item) => {
+            return {
+                skuId: item.skuId,
+                count: item.count,
+            };
+        });
+    });
 
-findCheckoutInfo().then((res) => {
-    checkoutInfo.value = res.result;
+} else {
+    findCheckoutInfo().then((res) => {
+        checkoutInfo.value = res.result;
+    });
     // 设置提交时候的商品
-    requestParams.goods = checkoutInfo.value.goods.map(item => {
+    requestParams.goods = checkoutInfo.value.goods.map((item) => {
         return {
             skuId: item.skuId,
-            count: item.count
-        }
-    })
-});
-
+            count: item.count,
+        };
+    });
+}
 
 // 需要提交的字段
 const requestParams = reactive({
     addressId: null,
     deliveryTimeType: 1,
     payType: 1,
-    buyerMessage: '',
-    goods: []
-})
+    buyerMessage: "",
+    goods: [],
+});
 const injectId = (id) => {
     requestParams.addressId = id;
-
-}
-const router = useRouter()
+};
+const router = useRouter();
 const submit = () => {
     if (requestParams.addressId) {
-        createOrder(requestParams).then(res => {
-            router.push({ path: '/member/pay', query: { orderId: res.result.id } })
-        })
+        console.log(requestParams, "商品");
+        createOrder(requestParams).then((res) => {
+            router.push({ path: "/member/pay", query: { orderId: res.result.id } });
+        });
     } else {
         return message({
-            type: 'error',
-            message: '请选择收货地址'
-        })
+            type: "error",
+            message: "请选择收货地址",
+        });
     }
-}
+};
 </script>
 <style scoped lang="scss">
 .xtx-pay-checkout-page {
