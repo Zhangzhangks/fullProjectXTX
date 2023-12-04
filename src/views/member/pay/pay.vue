@@ -57,7 +57,7 @@ import { useRoute } from 'vue-router'
 import { baseURL } from '@/utils/request'
 // 提供复用逻辑的函数（钩子）
 import useCountdown from './countdown'
-import XtxxDialog from '@/components/xtxx-dialog.vue'
+
 
 const { FormatTime, start } = useCountdown();
 // 订单

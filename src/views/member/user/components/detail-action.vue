@@ -58,7 +58,7 @@ const props = defineProps({
 const router = useRouter()
 const aganeBuy = (order) => {
 
-    router.push('/member/checkout?orderId=' + order.id)
+    router.push(`/member/checkout?orderId=${+ order.id}`)
 }
 </script>
 <style scoped lang="scss">
